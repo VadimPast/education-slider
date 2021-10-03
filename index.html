@@ -1,0 +1,120 @@
+<style>
+    .root {
+        width: 100%;
+    }
+
+    .images {
+        margin-bottom: 20px !important;
+    }
+
+    .buttons, .images  {
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .slide {
+        display: none;
+    }
+
+    .active-slide {
+        /*border: red 2px solid;*/
+        display: initial;
+    }
+</style>
+
+<script>
+    function activateSlide(currentSlideNumber) {
+        const slideElements = document.getElementsByClassName('slide') //
+        for (const slideElement of slideElements) {
+            slideElement.classList.remove('active-slide')
+        }
+
+
+        if (currentSlideNumber === undefined) {
+            return
+        }
+
+        const imageId = 'slide' + currentSlideNumber
+        const currentSlideElement = document.getElementById(imageId)
+
+        if (currentSlideElement === null) {
+            return
+        }
+        currentSlideElement.classList.add('active-slide')
+    }
+
+    function startSlider(rootElementId, amountImages) {
+        let currentSlideNumber = 1
+
+        function onReset() {
+            currentSlideNumber = 1
+
+            activateSlide(currentSlideNumber)
+        }
+
+        function onPrev() {
+            if (currentSlideNumber === undefined) {
+                currentSlideNumber = amountImages
+            } else if (currentSlideNumber <= 1) {
+                currentSlideNumber = amountImages
+            } else {
+                currentSlideNumber--
+            }
+
+            activateSlide(currentSlideNumber)
+        }
+
+        function onNext() {
+            if (currentSlideNumber === undefined || currentSlideNumber >= amountImages) {
+                currentSlideNumber = 1
+            } else {
+                currentSlideNumber++
+            }
+
+            activateSlide(currentSlideNumber)
+        }
+
+        const sliderRootElement = document.getElementById(rootElementId)
+
+        if (sliderRootElement === null) {
+            console.error('Can not find element wth id ' + rootElementId)
+
+            return
+        }
+
+        for (let imageNumber = 1; imageNumber <= amountImages; imageNumber++) {
+            const imageElement = document.createElement('img')
+            imageElement.src = `/assests/${imageNumber}.jpeg`
+            imageElement.alt = 'image ' + imageNumber
+            imageElement.id = 'slide' + imageNumber
+            imageElement.classList.add('slide')
+
+            sliderRootElement.appendChild(imageElement)
+        }
+
+        activateSlide(currentSlideNumber)
+
+        const prevButtonElement = document.getElementById('prev')
+        prevButtonElement.onclick = onPrev
+
+        document.getElementById('next').onclick = onNext
+        document.getElementById('reset').onclick = onReset
+    }
+
+    window.onload = function () {
+        startSlider('images', 4)
+    }
+</script>
+
+<div class="root">
+    <div class="images" id="images"></div>
+
+    <div class="buttons">
+        <button type="button" id="prev">Prev</button>
+        <button type="button" id="next">Next</button>
+        <button type="button" id="reset">Reset</button>
+    </div>
+
+</div>
+
+
